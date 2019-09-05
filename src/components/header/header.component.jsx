@@ -4,11 +4,14 @@ import { connect } from 'react-redux'; // connect is an higher order component t
 
 import { auth } from '../../firebase/firebase.utils';
 
+import CartIcon from '../cart-icon/cart-icon.component';
+import CartDropdown from '../cart-dropdown/cart-dropdown.component';
+
 import { ReactComponent as Logo } from '../../assets/crown.svg';
 
 import './header.styles.scss';
 
-const Header = ({ currentUser }) => (
+const Header = ({ currentUser, hidden }) => (
     <div className='header'>
         <Link className='logo-container' to="/">
             <Logo className='logo'/>
@@ -30,12 +33,15 @@ const Header = ({ currentUser }) => (
                     SIGN IN
                 </Link>
                  )}
+                <CartIcon />
         </div>
+        {hidden ? null : <CartDropdown/>} {/*if hidden is true then dont render Cartdropdoen, if false then render it */}
     </div>
 )
 
-const mapStateToProps = state => ({ // state is the top level root reducer
-    currentUser: state.user.currentUser
+const mapStateToProps = ({user: {currentUser}, cart: { hidden }}) => ({ // destructuring user and cart 
+    currentUser,
+    hidden
 });
 
 export default connect(mapStateToProps)(Header);
