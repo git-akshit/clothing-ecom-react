@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom'
+import { Switch, Route, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux';
 
 import './App.css';
@@ -47,7 +47,17 @@ class App extends React.Component {
         <Switch>
           <Route exact path='/' component={HomePage} /> {/*which component to render on which url, exact means render this component only when it exactly matches the route */}
           <Route path='/shop' component={ShopPage} />
-          <Route path='/signIn' component={SignInAndSignUpPage} />
+          <Route 
+          exact 
+          path='/signIn' 
+          render={() =>
+            this.props.currentUser ? (
+              <Redirect to='/' /> //if user is signed in then take to home else sign in sign up
+            ) : (
+              <SignInAndSignUpPage />
+            )  
+          } 
+          />
         </Switch>
       </div>
     );
@@ -55,8 +65,15 @@ class App extends React.Component {
 
 }
 
+const mapStateToProps = ({ user }) => ({
+  currentUser: user.currentUser
+})
+
 const mapDispatchToProps = dispatch => ({
   setCurrentUser: user => dispatch(setCurrentUser(user)) // dispatch is a way from which redux knows that an action is being passed to it and it passes to every reducer, we give setCurrentUser the user, which is the value for payload, we are dispatching the user to payload 
 })
 
-export default connect(null, mapDispatchToProps)(App);//first argument is null because we dont need state for props 
+export default connect(
+  mapStateToProps, 
+  mapDispatchToProps
+  )(App);//first argument is null because we dont need state for props 
