@@ -7,7 +7,7 @@ import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component';
 import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
 import Header from './components/header/header.component';
-import { auth } from './firebase/firebase.utils'; // for google auth, storing which user signed in from state in app
+import { auth, createUserProfileDocument } from './firebase/firebase.utils'; // for google auth, storing which user signed in from state in app
 
 class App extends React.Component {
   constructor() {
@@ -21,10 +21,23 @@ class App extends React.Component {
   unsubscribeFromAuth = null;
 
   componentDidMount() {
-  this.unsubscribeFromAuth =  auth.onAuthStateChanged(user => { // firebase changes the state when the user has signed in or signed out
-      this.setState({ currentUser: user});
+  this.unsubscribeFromAuth =  auth.onAuthStateChanged(async userAuth => { // firebase changes the state when the user has signed in or signed out
+    if (userAuth) {
+       const userRef = await createUserProfileDocument(userAuth); // user is getting back from auth library
 
-      console.log(user);
+       userRef.onSnapshot( snapShot => { //from here we will get the data of newly created user, or data of already stored user
+        this.setState({
+          currentUser: {
+            id: snapShot.id,
+            ...snapShot.data() // .data() actually contains the data like name, email etc
+          }
+        });
+       // console.log(this.state);
+       });
+      } else{ // if user is not signed in
+        this.setState({ currentUser: userAuth }); // this is equalivalent to saying current user to null
+      }
+     // console.log(user);
     });
   }
 
