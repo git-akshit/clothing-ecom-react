@@ -1,7 +1,9 @@
 import CartActionTypes from './cart.types';
+import { addItemToCart } from './cart.utils';
 
 const INITIAL_STATE = {
-    hidden: true
+    hidden: true,
+    cartItems: []
 };
 
 const cartReducer = (state = INITIAL_STATE, action) => {
@@ -10,6 +12,11 @@ const cartReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 hidden: !state.hidden
+            };
+        case CartActionTypes.ADD_ITEM: //reducer listens for adding item in cart 
+            return {
+                ...state, //we are returning the new state of overall cart reducer
+                cartItems:addItemToCart(state.cartItems, action.payload)//cartItems is new array ,from ...state.cartItems we are loading the already selected items from state in cart, action.payload is ading any new items in cart
             }
         default:
             return state;
