@@ -14,3 +14,19 @@ export const addItemToCart = (cartItems, cartItemToAdd) => { // we need to give 
 
     return [...cartItems, {...cartItemToAdd, quantity: 1}] //if existingCartItem is undefined then return a new array with existing cartitems and add quantity 1 to each
 };
+
+export const removeItemFromCart = (cartItems, cartItemToRemove) => {
+    const existingCartItem = cartItems.find(
+        cartItem => cartItem.id === cartItemToRemove.id
+    )
+
+    if (existingCartItem.quantity === 1){ //if quantity is 1 then remove it from list
+        return cartItems.filter(cartItem => cartItem.id !== cartItemToRemove.id)
+    }
+    //else if quantity is greater than 1 then decrease the quantity
+    return cartItems.map(cartItem => 
+        cartItem.id === cartItemToRemove.id
+            ? {...cartItem, quantity: cartItem.quantity - 1} //...cartItem means keep every other cart item same
+            : cartItem
+    );
+};
