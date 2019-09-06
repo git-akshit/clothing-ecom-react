@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 
 import { toggleCartHidden} from '../../redux/cart/cart.actions';
 import { selectCartItemsCount } from '../../redux/cart/cart.selectors';
@@ -19,8 +20,8 @@ const mapDispatchProps = dispatch => ({
     toggleCartHidden: () => dispatch(toggleCartHidden())
 });
 
-const mapStateToProps = state => ({ //it pulls off the whole state from redux store, and only displays the slice of the state(quantity), counting the total quantity in the cart
-    itemCount: selectCartItemsCount(state) // passing the whole reducer state to selectCartItemsCount
+const mapStateToProps = createStructuredSelector ({ //it pulls off the whole state from redux store, and only displays the slice of the state(quantity), counting the total quantity in the cart
+    itemCount: selectCartItemsCount // passing the whole reducer state to selectCartItemsCount
 }); //every time the state changes it is rerendered, even if user logs in or logs out
 
 export default connect(

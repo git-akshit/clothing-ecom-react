@@ -1,15 +1,18 @@
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 
 import './App.css';
 
 import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component';
 import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
+import CheckoutPage from './pages/checkout/checkout.component';
 import Header from './components/header/header.component';
 import { auth, createUserProfileDocument } from './firebase/firebase.utils'; // for google auth, storing which user signed in from state in app
 import { setCurrentUser} from './redux/user/user.actions';
+import { selectCurrentUser } from './redux/user/user.selectors';
 
 class App extends React.Component {
 
@@ -46,7 +49,8 @@ class App extends React.Component {
         <Header />  {/*Header gets the signed user state that is the user signed in or not, Header is placed outside the Switch because we want it to stay on the page and react will always render it on the page */}
         <Switch>
           <Route exact path='/' component={HomePage} /> {/*which component to render on which url, exact means render this component only when it exactly matches the route */}
-          <Route path='/shop' component={ShopPage} />
+          <Route path='/shop' component={ShopPage} />  {/*shop is not exact because there are categories, hat to be shopped */}
+          <Route exact path='/checkout' component={CheckoutPage} />
           <Route 
           exact 
           path='/signIn' 
@@ -65,8 +69,8 @@ class App extends React.Component {
 
 }
 
-const mapStateToProps = ({ user }) => ({
-  currentUser: user.currentUser
+const mapStateToProps = createStructuredSelector({
+  currentUser: selectCurrentUser
 })
 
 const mapDispatchToProps = dispatch => ({
